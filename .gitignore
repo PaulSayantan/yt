@@ -1,0 +1,4 @@
+# ignore upload of following folders 
+.yt/
+__pycache__/
+.idea
