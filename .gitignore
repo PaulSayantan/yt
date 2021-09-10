@@ -2,3 +2,5 @@
 .yt/
 __pycache__/
 .idea
+.vscode
+*.egg-info/
