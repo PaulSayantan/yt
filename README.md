@@ -1,6 +1,6 @@
 <h1 align="center">yt</h1>
 
-An easy to use YouTube Downloader for downloading YouTube content as video or audio. Written in Python
+An easy to use command-line program for downloading YouTube content as video or audio. Written in Python
 
 ## Requirements
 
