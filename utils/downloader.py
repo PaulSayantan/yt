@@ -142,7 +142,7 @@ class Video:
         self.ytdl_opts['merge_output_format'] = 'mkv'
         try:
             print('Video Downloading: ', self.title)
-            self.__pbar = tqdm(total=100, unit='mb', smoothing=0.3)
+            self.__pbar = tqdm(total=100, bar_format='{bar}: {percentage:3.0f}%', postfix=None)
             with YoutubeDL(self.ytdl_opts) as dl:
                 dl.download([self.__video])
             self.__pbar.close()
@@ -243,7 +243,7 @@ class Audio:
         self.ytdl_opts['progress_hooks'] = [self.audio_hook]
         self.ytdl_opts['outtmpl'] = dir + self.ytdl_opts['outtmpl']
         print('Audio Downloading: ', self.title())
-        self.__pbar = tqdm(total=100, unit='mb', smoothing=0.9)
+        self.__pbar = tqdm(total=100, bar_format='{bar}: {percentage:3.0f}%', postfix=None)
         try:
             with YoutubeDL(self.ytdl_opts) as yt:
                 yt.download([self.__audio])
@@ -270,7 +270,7 @@ class Playlist:
             'quiet': True
         }
         self.__playlist: str = ''
-        self.__name: str = ''
+        self.__name: str = 'NOT FOUND'
 
 
     @property
@@ -298,21 +298,20 @@ class Playlist:
 
         urls = {}
         try:
-            print('Retrieving URLs from the playlist....')
+            print('Retrieving URLs from the playlist.... ')
             with YoutubeDL(self.ytdl_opts) as yt:
                 data = yt.extract_info(self.__playlist, download=False)
                 if 'entries' in data:
                     playlist = data['entries']
-                    print('Playlist :: ', playlist[0]['playlist'])
                     self.__name = playlist[0]['playlist']
                     for item in playlist:
                         urls[item['title']] = item['webpage_url']
-                else:
-                    print('This is not an YouTube Playlist URL')
+                    
+                return urls
         except Exception:
             raise UnavailableVideoError
         finally:
-            return urls
+            print('Playlist :: ', self.__name)
 
 
     def dl(self, dtype: str, dir: str = os.getcwd() + '/Playlists/'):
@@ -321,20 +320,19 @@ class Playlist:
         Args:
             dir: directory where the videos/audio will be saved
             dtype: whether all urls will be downloaded as videos or audios
-            urls: list of all urls in the playlist
 
         """
 
         urls = self.playlist_urls()
 
-        __dir = dir + self.__name
+        __dir = dir + self.__name + '/'
         if dtype == 'audio':
             for _, link in urls.items():
                 audio = Audio()
                 audio.url = link
-                audio.dl(dir=__dir)
+                audio.dl(dir=__dir + '/audio/')
         elif dtype == 'video':
             for _, link in urls.items():
                 video = Video()
                 video.url = link
-                video.dl(dir=__dir)
+                video.dl(dir=__dir + '/video/')

@@ -10,7 +10,7 @@ from utils.url import *
 @command()
 @option('--music', '-m', type=STRING, help='download YouTube video in mp3')
 @option('--video', '-v', type=STRING, help='download YouTube video')
-@option('--playlist', '-pl', nargs=2, type=Tuple([STRING, STRING]), help='download all YouTube videos in a playlist, denote -a for audio')
+@option('--playlist', '-pl', nargs=2, type=Tuple([STRING, STRING]), help='download all YouTube videos in a playlist, denote a for audio')
 @option('--path', '-p', required=False, type=Path(), help='paste the directory where you want to save the downloaded files, if no path provided, files will be downloaded in current directory')
 def cli(music, video, playlist, path):
     if music:
@@ -30,17 +30,19 @@ def cli(music, video, playlist, path):
     elif playlist:
         pl = Playlist()
         pl.url = valid_playlist(playlist[0])
-        dt: str = playlist[1]
+        
+        if playlist[1]:
+            dt: str = playlist[1]
         if path:
-            if dt == '-a' or dt == 'audio':
-                pl.dl(dtype='audio', urls=pl.playlist_urls(), dir=path)
+            if dt == 'a' or dt == 'audio':
+                pl.dl(dtype='audio', dir=path)
             else:
-                pl.dl(dtype='video', urls=pl.playlist_urls(), dir=path)
+                pl.dl(dtype='video', dir=path)
         else:
-            if dt == '-a' or dt == 'audio':
-                pl.dl(dtype='audio', urls=pl.playlist_urls())
+            if dt == 'a' or dt == 'audio':
+                pl.dl(dtype='audio')
             else:
-                pl.dl(dtype='video', urls=pl.playlist_urls())
+                pl.dl(dtype='video')
 
 
 

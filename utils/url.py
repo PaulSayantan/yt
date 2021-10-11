@@ -46,13 +46,12 @@ def valid_url(url: str) -> Optional[str]:
                     raise URLError
 
         elif url.startswith("https://www.youtube.com/playlist?list="):
-            print('This is an Playlist')
+            print('You have provided an Playlist URL')
             pl = Playlist()
             pl.url = url
             for title, link in pl.playlist_urls():
                 print(f'{title}\n')
                 print(f'{link}\n--------\n')
-            print('pick any of the links you want to download an ')
         else:
             raise URLError
     except URLError as err:
@@ -63,7 +62,7 @@ def valid_url(url: str) -> Optional[str]:
 
 def valid_playlist(url: str) -> Optional[str]:
     try:
-        if url.startswith("https://www.youtube.com/playlist?list=") and len(url.split('&list=')[1]) == 34:
+        if url.startswith("https://www.youtube.com/playlist?list=") and len(url.split('?list=')[1]) == 34:
             return url
         else:
             raise URLError('YouTube URL provided is not a valid playlist')
